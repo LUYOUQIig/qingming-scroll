@@ -147,6 +147,15 @@
     { i: 6, u: .5360, v: .180, n: '桥上市声' }
   ];
 
+  function playSpot(btn) {
+    const f = FILM_SPOTS[+btn.dataset.k];
+    if (!f) return;
+    openFilmGallery();
+    playFilm(f.i);
+  }
+
+  let dotDown = null, dotLast = 0;
+
   function buildFilmDots() {
     if (!el.filmDots || el.filmDots.children.length) return;
     el.filmDots.innerHTML = FILM_SPOTS.map((f, k) => `
@@ -154,14 +163,30 @@
         aria-label="播放短片：${f.n}" title="${f.n}">
         <i></i><span>${f.n}</span>
       </button>`).join('');
+
+    /* 舞台的拖拽会 setPointerCapture，把 click 抢走，所以这里用 pointerup 直接触发 */
+    el.filmDots.addEventListener('pointerdown', e => {
+      const b = e.target.closest('.film-hot');
+      if (!b) return;
+      dotDown = b;
+      e.stopPropagation();
+    });
+    el.filmDots.addEventListener('pointerup', e => {
+      const b = e.target.closest('.film-hot');
+      e.stopPropagation();
+      if (!b || b !== dotDown) { dotDown = null; return; }
+      dotDown = null;
+      dotLast = performance.now();
+      playSpot(b);
+    });
+    el.filmDots.addEventListener('pointercancel', () => { dotDown = null; });
+    /* 键盘（Enter / 空格）走 click */
     el.filmDots.addEventListener('click', e => {
       const b = e.target.closest('.film-hot');
       if (!b) return;
       e.stopPropagation();
-      const f = FILM_SPOTS[+b.dataset.k];
-      if (!f) return;
-      openFilmGallery();
-      playFilm(f.i);
+      if (performance.now() - dotLast < 600) return;
+      playSpot(b);
     });
   }
 
@@ -325,7 +350,7 @@
   function stopInertia() { cancelAnimationFrame(inertia); velocity = 0; }
 
   el.stage.addEventListener('pointerdown', e => {
-    if (e.target.closest('.hot')) return;
+    if (e.target.closest('.hot') || e.target.closest('.film-hot')) return;
     if (document.body.classList.contains('story-on')) return;
     endTour(true);
     try { el.stage.setPointerCapture(e.pointerId); } catch { /* 合成事件 */ }
@@ -1424,7 +1449,7 @@
   function openFilmGallery() {
     buildFilms();
     el.film.hidden = false;
-    requestAnimationFrame(() => el.film.classList.add('on'));
+    el.film.classList.add('on');
     document.body.classList.add('film-on');
   }
 
