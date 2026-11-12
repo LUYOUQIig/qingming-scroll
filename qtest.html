@@ -1,0 +1,79 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>qm-test2</title>
+<style>body{font:13px monospace;background:#fff;color:#000}iframe{width:1200px;height:760px;border:0;position:absolute;left:-9999px}</style>
+</head><body>
+<pre id="out">running…</pre>
+<iframe id="f" src="index.html?snap#view"></iframe>
+<script>
+const log = [];
+const out = document.getElementById('out');
+const f = document.getElementById('f');
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+f.addEventListener('load', async () => {
+  const w = f.contentWindow, d = f.contentDocument;
+  const errs = [];
+  w.addEventListener('error', e => errs.push(e.message));
+  const ce = w.console.error;
+  w.console.error = (...a) => { errs.push(a.join(' ')); ce.apply(w.console, a); };
+  await sleep(1200);
+
+  const click = id => d.getElementById(id).click();
+
+  // 光色
+  click('lightBtn'); await sleep(120);
+  log.push('light1=' + d.body.dataset.light);
+  click('lightBtn'); await sleep(120);
+  log.push('light2=' + d.body.dataset.light + ' label=' + d.getElementById('lightLabel').textContent);
+  click('lightBtn'); await sleep(120);
+  log.push('light3=' + d.body.dataset.light);
+
+  // 雨
+  click('rainBtn'); await sleep(400);
+  const rain = d.getElementById('rain');
+  log.push('rain=' + d.body.dataset.rain + ' canvas=' + rain.width + 'x' + rain.height);
+  click('rainBtn'); await sleep(200);
+  log.push('rain off=' + d.body.dataset.rain);
+
+  // 放大镜
+  click('loupeBtn'); await sleep(200);
+  const stage = d.getElementById('stage');
+  const r = stage.getBoundingClientRect();
+  stage.dispatchEvent(new w.PointerEvent('pointermove', { pointerId: 3, clientX: r.left + 500, clientY: r.top + 300, bubbles: true }));
+  await sleep(300);
+  const loupe = d.getElementById('loupe');
+  const lc = loupe.querySelector('canvas');
+  const px = lc.getContext('2d').getImageData(180, 180, 1, 1).data;
+  log.push('loupe on=' + loupe.classList.contains('on') + ' pixel=' + [...px].join(',') + ' pos=' + loupe.style.left + ',' + loupe.style.top);
+  click('loupeBtn'); await sleep(120);
+  log.push('loupe off=' + !loupe.classList.contains('on'));
+
+  // 自动展卷
+  const x0 = parseFloat(d.getElementById('track').style.transform.match(/translate3d\((-?[\d.]+)px/)[1]);
+  click('tourBtn'); await sleep(2600);
+  log.push('tour pressed=' + d.getElementById('tourBtn').getAttribute('aria-pressed'));
+  click('tourBtn'); await sleep(200);
+  log.push('tour off=' + d.getElementById('tourBtn').getAttribute('aria-pressed'));
+
+  // 八景阅毕
+  for (let i = 0; i < 8; i++) { d.querySelectorAll('.hot')[i].click(); await sleep(80); }
+  await sleep(1200);
+  log.push('done=' + !d.getElementById('done').hidden + ' seals=' + d.querySelectorAll('.seal.on').length);
+
+  // 复制
+  click('shareScene'); await sleep(400);
+  const toast = d.querySelector('.toast');
+  log.push('toast=' + (toast ? toast.textContent : 'none'));
+
+  // 关闭
+  click('doneClose'); await sleep(150);
+  log.push('done closed=' + d.getElementById('done').hidden);
+  d.getElementById('panelClose').click();
+  await sleep(150);
+  log.push('panel open=' + d.getElementById('panel').classList.contains('open') + ' body.panel-open=' + d.body.classList.contains('panel-open'));
+
+  log.push('errors: ' + (errs.length ? errs.join(' | ') : 'none'));
+  out.textContent = log.join('\n');
+});
+</script>
+</body></html>
