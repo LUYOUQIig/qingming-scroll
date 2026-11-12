@@ -169,6 +169,7 @@
       const b = e.target.closest('.film-hot');
       if (!b) return;
       dotDown = b;
+      e.preventDefault();
       e.stopPropagation();
     });
     el.filmDots.addEventListener('pointerup', e => {
@@ -1460,12 +1461,15 @@
     setTimeout(() => { el.film.hidden = true; }, 450);
   }
 
+  let filmOpenedAt = 0;
+
   function playFilm(i) {
     const f = FILMS[i];
     if (!f) return;
     el.filmVideo.src = 'assets/film/' + f.f + '.mp4';
     el.filmCap.textContent = f.t + ' · ' + f.sub;
     el.filmStage.hidden = false;
+    filmOpenedAt = performance.now();
     el.filmVideo.currentTime = 0;
     el.filmVideo.play().catch(() => { /* 用户再点一次即可 */ });
   }
@@ -1483,7 +1487,11 @@
     if (card) playFilm(+card.dataset.i);
   });
   el.filmClose.addEventListener('click', closeFilmPlayer);
-  el.filmStage.addEventListener('click', e => { if (e.target === el.filmStage) closeFilmPlayer(); });
+  el.filmStage.addEventListener('click', e => {
+    if (e.target !== el.filmStage) return;
+    if (performance.now() - filmOpenedAt < 700) return;
+    closeFilmPlayer();
+  });
   el.filmBack.addEventListener('click', closeFilmGallery);
   el.filmBtn.addEventListener('click', openFilmGallery);
   el.filmIntro.addEventListener('click', openFilmGallery);
