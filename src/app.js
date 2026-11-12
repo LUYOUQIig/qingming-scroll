@@ -102,6 +102,7 @@
     film: $('#film'), filmGrid: $('#filmGrid'), filmStage: $('#filmStage'),
     filmVideo: $('#filmVideo'), filmClose: $('#filmClose'), filmCap: $('#filmCap'),
     filmBack: $('#filmBack'), filmBtn: $('#filmBtn'), filmIntro: $('#filmIntro'),
+    filmDots: $('#filmDots'),
     walkInteract: $('#walkInteract'), walkBtn: $('#walkBtn'), walkIntro: $('#walkIntro'),
     story: $('#story'), storyCard: $('.story-card'), storyTitle: $('#storyTitle'),
     storyText: $('#storyText'), storyPrev: $('#storyPrev'), storyNext: $('#storyNext'),
@@ -134,9 +135,40 @@
     return arr;
   }
 
+
+  /* 画中影像点：直接点在画上就播对应短片 */
+  const FILM_SPOTS = [
+    { i: 0, u: .5095, v: .345, n: '汴河舟楫' },
+    { i: 1, u: .6050, v: .395, n: '河湾泊舟' },
+    { i: 2, u: .8680, v: .500, n: '村市车马' },
+    { i: 3, u: .1900, v: .560, n: '东角子门' },
+    { i: 4, u: .4470, v: .640, n: '彩楼欢宴' },
+    { i: 5, u: .4400, v: .305, n: '墨卷初开' },
+    { i: 6, u: .5360, v: .180, n: '桥上市声' }
+  ];
+
+  function buildFilmDots() {
+    if (!el.filmDots || el.filmDots.children.length) return;
+    el.filmDots.innerHTML = FILM_SPOTS.map((f, k) => `
+      <button class="film-hot" data-k="${k}" style="left:${f.u * 100}%;top:${f.v * 100}%"
+        aria-label="播放短片：${f.n}" title="${f.n}">
+        <i></i><span>${f.n}</span>
+      </button>`).join('');
+    el.filmDots.addEventListener('click', e => {
+      const b = e.target.closest('.film-hot');
+      if (!b) return;
+      e.stopPropagation();
+      const f = FILM_SPOTS[+b.dataset.k];
+      if (!f) return;
+      openFilmGallery();
+      playFilm(f.i);
+    });
+  }
+
   function build() {
     if (built) return;
     built = true;
+    buildFilmDots();
     el.lights.innerHTML = LAMPS.map(([u, v, k]) =>
       `<i class="lamp" style="left:${u * 100}%;top:${v * 100}%;transform:scale(${k})"></i>`
     ).join('');
