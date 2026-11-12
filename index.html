@@ -48,6 +48,10 @@
         <span>入画</span>
         <small>走进虹桥街市</small>
       </button>
+      <button id="filmIntro" class="btn btn-ghost">
+        <span>影像</span>
+        <small>七段短片</small>
+      </button>
     </div>
 
     <p class="foot">图：故宫博物院藏本（公有领域）　·　拖动、滚轮、方向键皆可展卷</p>
@@ -79,6 +83,10 @@
       <button id="storyBtn" class="tool tool-wide" aria-pressed="false" aria-label="观看虹桥过船">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 16q9 7 18 0H3Zm9-11v10M6 10q6-8 12 0"/></svg>
         <span>过船</span>
+      </button>
+      <button id="filmBtn" class="tool tool-wide" aria-label="影像：七段短片">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3Z"/></svg>
+        <span>影像</span>
       </button>
       <button id="walkBtn" class="tool tool-wide" aria-label="入画：走进虹桥街市">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M7 20V9l5-4 5 4v11M10 20v-6h4v6"/></svg>
@@ -226,6 +234,24 @@
     <button id="walkLeft" class="walk-arrow" aria-label="向左走">‹</button>
     <button id="walkInteract" class="walk-cta">互动</button>
     <button id="walkRight" class="walk-arrow" aria-label="向右走">›</button>
+  </div>
+</section>
+
+<!-- ============ 影像 ============ -->
+<section id="film" class="film" hidden aria-label="影像 · 七段短片">
+  <header class="film-bar">
+    <button id="filmBack" class="icon-btn" aria-label="返回">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg>
+      <span>返回</span>
+    </button>
+    <div class="film-head"><b>影像</b><span>清明上河 · 七段</span></div>
+    <span class="film-hint">点开即可播放</span>
+  </header>
+  <div id="filmGrid" class="film-grid"></div>
+  <div id="filmStage" class="film-stage" hidden>
+    <video id="filmVideo" playsinline controls preload="metadata"></video>
+    <button id="filmClose" class="film-close" aria-label="关闭">×</button>
+    <p id="filmCap" class="film-cap"></p>
   </div>
 </section>
 
