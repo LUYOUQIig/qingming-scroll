@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#e7dcc4">
+<title>清明上河图 · 长卷入画</title>
+<meta name="description" content="北宋张择端《清明上河图》交互长卷：自右向左缓缓展卷，拖动观画，点景读题，另有「虹桥过船」故事分镜与夜景。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='6' fill='%23a13124'/%3E%3Cpath d='M14 22h36v6H14zm0 14h36v6H14z' fill='%23f3e9d2'/%3E%3C/svg%3E">
+<link rel="preload" href="assets/scroll/t05.webp" as="image">
+<link rel="stylesheet" href="src/style.css">
+</head>
+<body class="is-intro">
+
+<!-- ============ 卷首 ============ -->
+<section id="intro" class="intro" aria-label="卷首">
+  <p class="side side-l" aria-hidden="true">汴 京 一 日</p>
+  <p class="side side-r" aria-hidden="true">千 年 一 瞬</p>
+  <div class="intro-inner">
+    <p class="eyebrow"><i></i>北宋 · 张择端 · 绢本淡设色<i></i></p>
+
+    <h1 class="title" aria-label="清明上河图">
+      <span>清</span><span>明</span><span>上</span><span>河</span><span>图</span>
+    </h1>
+
+    <p class="lede">汴京一日，十里长街。自右向左，缓缓展卷。</p>
+
+    <div class="scroll-frame" aria-hidden="true">
+      <span class="rod"></span>
+      <div class="cover"></div>
+      <span class="rod"></span>
+    </div>
+
+    <div class="places" aria-hidden="true">
+      <span>郊野</span><i></i><span>汴河</span><i></i><span>虹桥</span><i></i><span>城门</span><i></i><span>街市</span>
+    </div>
+
+    <div class="actions">
+      <button id="enter" class="btn btn-solid">
+        <span>展卷入画</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg>
+      </button>
+      <button id="storyIntro" class="btn btn-ghost">
+        <span>虹桥过船</span>
+        <small>画中故事 · 五景</small>
+      </button>
+      <button id="walkIntro" class="btn btn-ghost">
+        <span>入画</span>
+        <small>走进虹桥街市</small>
+      </button>
+    </div>
+
+    <p class="foot">图：故宫博物院藏本（公有领域）　·　拖动、滚轮、方向键皆可展卷</p>
+  </div>
+</section>
+
+<!-- ============ 长卷 ============ -->
+<div id="viewer" class="viewer" hidden>
+  <header class="bar">
+    <button id="back" class="icon-btn" aria-label="回到卷首" title="回到卷首">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg>
+      <span>卷首</span>
+    </button>
+
+    <div class="bar-mid">
+      <b>清明上河图</b>
+      <span id="where">虹桥</span>
+    </div>
+
+    <div class="bar-tools">
+      <button id="nightBtn" class="tool" aria-pressed="false" aria-label="切换夜景" title="夜景">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5Z"/></svg>
+        <span>夜</span>
+      </button>
+      <button id="soundBtn" class="tool" aria-pressed="false" aria-label="开启环境声" title="环境声">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4Z"/><path d="M16 8.5q4 3.5 0 7"/><path class="mute" d="m4 3 16 18"/></svg>
+        <span>声</span>
+      </button>
+      <button id="storyBtn" class="tool tool-wide" aria-pressed="false" aria-label="观看虹桥过船">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 16q9 7 18 0H3Zm9-11v10M6 10q6-8 12 0"/></svg>
+        <span>过船</span>
+      </button>
+      <button id="walkBtn" class="tool tool-wide" aria-label="入画：走进虹桥街市">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M7 20V9l5-4 5 4v11M10 20v-6h4v6"/></svg>
+        <span>入画</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="tools-float" role="group" aria-label="观画工具">
+    <button id="lightBtn" class="mini-tool" aria-label="光线：昼，点击切换昼、暮、夜" title="光线 · 昼 / 暮 / 夜">
+      <span class="mt-ico" id="lightIcon">
+        <svg class="i-day" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4m0-14.2-1.4 1.4M6.3 17.7l-1.4 1.4"/></svg>
+        <svg class="i-dusk" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17h16M7 17a5 5 0 0 1 10 0"/><path d="M12 4v3m-5.7 1.3L8 9.9m9.4-1.4 1.4-1.4"/></svg>
+        <svg class="i-night" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5Z"/></svg>
+      </span>
+      <span id="lightLabel">昼</span>
+    </button>
+    <button id="rainBtn" class="mini-tool" aria-pressed="false" aria-label="落雨" title="时雨">
+      <span class="mt-ico"><svg viewBox="0 0 28 24" aria-hidden="true"><path d="M7 13q-3 0-3-3t3-3q1-4 5-4 4 0 5 3 4-1 6 2t-1 5H7Zm2 3-2 4m7-4-2 4m7-4-2 4"/></svg></span>
+      <span>雨</span>
+    </button>
+    <button id="lifeBtn" class="mini-tool" aria-pressed="true" aria-label="活画：画中人物行走" title="活画 · 画中人">
+      <span class="mt-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="4.6" r="2.1"/><path d="M12 7v6m0 0-2.6 6.5M12 13l2.6 6.5M7 10.5h10"/></svg></span>
+      <span>活</span>
+    </button>
+    <button id="loupeBtn" class="mini-tool" aria-pressed="false" aria-label="画眼放大镜" title="细看（放大镜）">
+      <span class="mt-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6"/><path d="m15 15 5 5M8 10.5h5m-2.5-2.5v5"/></svg></span>
+      <span>细看</span>
+    </button>
+    <button id="tourBtn" class="mini-tool" aria-pressed="false" aria-label="自动展卷" title="自动展卷（约一分半）">
+      <span class="mt-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7Z"/></svg></span>
+      <span>游卷</span>
+    </button>
+  </div>
+
+  <main id="stage" class="stage" tabindex="0" aria-label="清明上河图长卷，可拖动浏览，点击景物读题，方向键左右移动">
+    <div id="track" class="track">
+      <div id="tiles" class="tiles"></div>
+      <div id="hotspots" class="hotspots"></div>
+      <div id="lights" class="lights"></div>
+      <div id="storyRing" class="story-ring" hidden></div>
+    </div>
+    <div class="scrim top" aria-hidden="true"></div>
+    <div class="scrim bottom" aria-hidden="true"></div>
+    <div id="lightVeil" class="light-veil" aria-hidden="true"></div>
+    <canvas id="life" class="life" aria-hidden="true"></canvas>
+    <div class="rain-wash" aria-hidden="true"></div>
+    <canvas id="rain" class="rain" aria-hidden="true"></canvas>
+    <div class="vignette" aria-hidden="true"></div>
+    <div id="loupe" class="loupe"><canvas width="360" height="360"></canvas><i class="loupe-cross"></i></div>
+    <div id="hint" class="hint"><span>拖动展卷</span><span>滚轮左右</span><span>点景读题</span></div>
+  </main>
+
+  <footer class="rail">
+    <div class="mini-wrap">
+      <div id="mini" class="mini" role="slider" tabindex="0" aria-label="画卷位置" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+        <div class="mini-img"></div>
+        <div id="miniView" class="mini-view"></div>
+      </div>
+      <div class="mini-ticks">
+        <button data-u="0.06" style="--u:6%">城内</button>
+        <button data-u="0.19" style="--u:19%">城门</button>
+        <button data-u="0.37" style="--u:37%">码头</button>
+        <button data-u="0.51" style="--u:51%">虹桥</button>
+        <button data-u="0.88" style="--u:88%">郊野</button>
+      </div>
+    </div>
+    <div class="rail-meta">
+      <span id="railPlace">虹桥 · 漕船过桥</span>
+      <span id="railProgress">读过 0 / 八</span>
+    </div>
+  </footer>
+
+  <aside id="panel" class="panel" aria-live="polite" hidden>
+    <div class="panel-strip"><span id="panelTitleV">十里长街</span></div>
+    <div class="panel-body">
+      <div class="panel-top">
+        <span id="panelIndex" class="panel-index">一</span>
+        <div class="panel-tools">
+          <button id="shareScene" class="panel-mini" aria-label="复制此景链接" title="复制此景链接">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7 0l2-2a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-2 2a5 5 0 0 0 7 7l1-1"/></svg>
+          </button>
+          <button id="panelClose" class="panel-close" aria-label="收起题签">×</button>
+        </div>
+      </div>
+      <p id="panelSub" class="panel-sub">城内街市</p>
+      <h2 id="panelTitle">十里长街</h2>
+      <p id="panelText" class="panel-text"></p>
+      <div class="panel-foot">
+        <button id="prevScene" class="link-btn" aria-label="上一景">‹ 上一景</button>
+        <button id="nextScene" class="link-btn" aria-label="下一景">下一景 ›</button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="seals" aria-label="已读景数">
+    <span class="seals-label">读过</span>
+    <div id="sealRow" class="seal-row"></div>
+  </div>
+
+  <div id="tourCap" class="tour-cap">
+    <span class="tour-idx" id="tourIdx">一</span>
+    <b id="tourTitle">疏林晨烟</b>
+    <span class="tour-text" id="tourText"></span>
+  </div>
+
+  <div id="done" class="done" hidden>
+    <div class="done-card">
+      <p class="done-eyebrow">八 景 阅 毕</p>
+      <h2>一卷汴京，半日看尽</h2>
+      <p>从卷首的疏林，到卷末的十里长街：桥、船、城门、脚店、骆驼队，都看过了。左侧八枚朱印，就是这一卷的读书记录。</p>
+      <div class="done-actions">
+        <button id="doneTour" class="btn btn-solid btn-sm"><span>游一卷</span></button>
+        <button id="doneClose" class="link-btn">收卷</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 入画：走进街市 ============ -->
+<section id="walk" class="walk" hidden aria-label="入画：虹桥街市">
+  <canvas id="walkCanvas" class="walk-canvas"></canvas>
+  <div class="walk-scrim" aria-hidden="true"></div>
+
+  <header class="walk-bar">
+    <button id="walkBack" class="icon-btn" aria-label="退出入画">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg>
+      <span>退出</span>
+    </button>
+    <div class="walk-place"><b>虹桥街市</b><span id="walkWhere">桥头</span></div>
+    <div class="walk-hint"><kbd>←</kbd><kbd>→</kbd> 行走</div>
+  </header>
+
+  <div id="walkPrompt" class="walk-prompt" hidden>
+    <span class="key">E</span><span id="walkPromptText">饮茶</span>
+  </div>
+
+  <div id="walkCap" class="walk-cap" hidden>
+    <p id="walkCapTitle">茶棚</p>
+    <p id="walkCapText"></p>
+    <button id="walkCapClose" class="link-btn">继续走</button>
+  </div>
+
+  <div class="walk-mobile">
+    <button id="walkLeft" class="walk-arrow" aria-label="向左走">‹</button>
+    <button id="walkInteract" class="walk-cta">互动</button>
+    <button id="walkRight" class="walk-arrow" aria-label="向右走">›</button>
+  </div>
+</section>
+
+<!-- ============ 故事 ============ -->
+<div id="story" class="story" hidden>
+  <div class="story-card" role="dialog" aria-modal="false" aria-labelledby="storyTitle">
+    <p class="story-eyebrow">画中故事 · 虹桥过船</p>
+    <h2 id="storyTitle">一 · 桥下</h2>
+    <p id="storyText"></p>
+    <div class="story-actions">
+      <button id="storyPrev" class="link-btn">‹ 上一景</button>
+      <button id="storyNext" class="btn btn-solid btn-sm"><span>下一景</span></button>
+      <button id="storyExit" class="link-btn">收卷</button>
+    </div>
+    <div id="storyDots" class="story-dots"></div>
+  </div>
+</div>
+
+<script src="src/app.js"></script>
+</body>
+</html>
