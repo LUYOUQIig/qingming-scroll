@@ -1,0 +1,31 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>life-test</title></head>
+<body style="background:#fff;font:13px monospace">
+<pre id="out">…</pre>
+<iframe id="f" src="index.html?snap#life" style="width:1200px;height:760px;border:0;position:absolute;left:-9999px"></iframe>
+<script>
+const out=document.getElementById('out');
+const f=document.getElementById('f');
+f.addEventListener('load', async () => {
+  await new Promise(r=>setTimeout(r,2000));
+  const d=f.contentDocument, w=f.contentWindow;
+  const c=d.getElementById('life');
+  const ctx=c.getContext('2d');
+  const img=ctx.getImageData(0,0,c.width,c.height).data;
+  let n=0,minx=1e9,miny=1e9,maxx=-1,maxy=-1;
+  for(let y=0;y<c.height;y+=2){
+    for(let x=0;x<c.width;x+=2){
+      if(img[(y*c.width+x)*4+3]>8){ n++; if(x<minx)minx=x; if(x>maxx)maxx=x; if(y<miny)miny=y; if(y>maxy)maxy=y; }
+    }
+  }
+  out.textContent = [
+    'canvas=' + c.width + 'x' + c.height,
+    'css=' + c.style.width + ' x ' + c.style.height,
+    'alphaPixels(sampled)=' + n,
+    'bbox=' + minx + ',' + miny + ' -> ' + maxx + ',' + maxy,
+    'lifeOn=' + (d.body.dataset.life),
+    'agents=' + (w.__dbg ? w.__dbg() : 'n/a')
+  ].join('\n');
+});
+</script>
+</body></html>
