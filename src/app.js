@@ -99,6 +99,9 @@
     walkWhere: $('#walkWhere'), walkPrompt: $('#walkPrompt'), walkPromptText: $('#walkPromptText'),
     walkCap: $('#walkCap'), walkCapTitle: $('#walkCapTitle'), walkCapText: $('#walkCapText'),
     walkCapClose: $('#walkCapClose'), walkLeft: $('#walkLeft'), walkRight: $('#walkRight'),
+    film: $('#film'), filmGrid: $('#filmGrid'), filmStage: $('#filmStage'),
+    filmVideo: $('#filmVideo'), filmClose: $('#filmClose'), filmCap: $('#filmCap'),
+    filmBack: $('#filmBack'), filmBtn: $('#filmBtn'), filmIntro: $('#filmIntro'),
     walkInteract: $('#walkInteract'), walkBtn: $('#walkBtn'), walkIntro: $('#walkIntro'),
     story: $('#story'), storyCard: $('.story-card'), storyTitle: $('#storyTitle'),
     storyText: $('#storyText'), storyPrev: $('#storyPrev'), storyNext: $('#storyNext'),
@@ -1365,6 +1368,77 @@
   });
   addEventListener('resize', () => { if (WK.on) sizeWalk(); });
 
+  /* ---------- 影像 · 七段 ---------- */
+  const FILMS = [
+    { f: 'film1', t: '汴河舟楫', sub: '鸟瞰虹桥 · 粮船入京', d: '0:02' },
+    { f: 'film2', t: '河湾泊舟', sub: '柳岸 · 漕运', d: '0:12' },
+    { f: 'film3', t: '村市车马', sub: '郊野 · 牛车', d: '0:13' },
+    { f: 'film4', t: '东角子门', sub: '城门 · 驼队', d: '0:12' },
+    { f: 'film5', t: '彩楼欢宴', sub: '正店 · 街市', d: '0:12' },
+    { f: 'film6', t: '墨卷初开', sub: '水墨 · 虹桥', d: '0:08' },
+    { f: 'film7', t: '桥上市声', sub: '虹桥 · 人流', d: '0:08' }
+  ];
+
+  function buildFilms() {
+    if (el.filmGrid.children.length) return;
+    el.filmGrid.innerHTML = FILMS.map((f, i) => `
+      <button class="film-card" data-i="${i}" aria-label="播放 ${f.t}">
+        <img src="assets/film/${f.f}.jpg" alt="${f.t} · ${f.sub}" loading="lazy">
+        <span class="film-play"><i></i></span>
+        <span class="film-meta"><b>${f.t}</b><span>${f.d}</span></span>
+      </button>`).join('');
+  }
+
+  function openFilmGallery() {
+    buildFilms();
+    el.film.hidden = false;
+    requestAnimationFrame(() => el.film.classList.add('on'));
+    document.body.classList.add('film-on');
+  }
+
+  function closeFilmGallery() {
+    closeFilmPlayer();
+    el.film.classList.remove('on');
+    document.body.classList.remove('film-on');
+    setTimeout(() => { el.film.hidden = true; }, 450);
+  }
+
+  function playFilm(i) {
+    const f = FILMS[i];
+    if (!f) return;
+    el.filmVideo.src = 'assets/film/' + f.f + '.mp4';
+    el.filmCap.textContent = f.t + ' · ' + f.sub;
+    el.filmStage.hidden = false;
+    el.filmVideo.currentTime = 0;
+    el.filmVideo.play().catch(() => { /* 用户再点一次即可 */ });
+  }
+
+  function closeFilmPlayer() {
+    if (el.filmStage.hidden) return;
+    el.filmVideo.pause();
+    el.filmVideo.removeAttribute('src');
+    el.filmVideo.load();
+    el.filmStage.hidden = true;
+  }
+
+  el.filmGrid.addEventListener('click', e => {
+    const card = e.target.closest('.film-card');
+    if (card) playFilm(+card.dataset.i);
+  });
+  el.filmClose.addEventListener('click', closeFilmPlayer);
+  el.filmStage.addEventListener('click', e => { if (e.target === el.filmStage) closeFilmPlayer(); });
+  el.filmBack.addEventListener('click', closeFilmGallery);
+  el.filmBtn.addEventListener('click', openFilmGallery);
+  el.filmIntro.addEventListener('click', openFilmGallery);
+  addEventListener('keydown', e => {
+    if (el.film.hidden) return;
+    if (e.key === 'Escape') {
+      if (!el.filmStage.hidden) closeFilmPlayer();
+      else closeFilmGallery();
+      e.preventDefault();
+    }
+  });
+
   /* ---------- 场景切换 ---------- */
   function enterViewer() {
     if (!el.viewer.hidden) return;
@@ -1457,6 +1531,8 @@
         drawLifeFrame(.35);
       }
       else if (h === 'tour') startTour();
+      else if (h === 'film') openFilmGallery();
+      else if (/^film=\d$/.test(h)) { openFilmGallery(); playFilm(+h.slice(5)); }
       else if (h === 'walk') {
         enterWalk();
         setTimeout(() => { sizeWalk(); drawWalk(.8); }, 420);
