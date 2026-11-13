@@ -6,6 +6,7 @@
 <meta name="theme-color" content="#e7dcc4">
 <title>清明上河图 · 长卷入画</title>
 <meta name="description" content="北宋张择端《清明上河图》交互长卷：自右向左缓缓展卷，拖动观画，点景读题，另有「虹桥过船」故事分镜与夜景。">
+<meta name="aigc-disclosure" content="partial">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='6' fill='%23a13124'/%3E%3Cpath d='M14 22h36v6H14zm0 14h36v6H14z' fill='%23f3e9d2'/%3E%3C/svg%3E">
 <link rel="preload" href="assets/scroll/t05.webp" as="image">
 <link rel="stylesheet" href="src/style.css">
@@ -54,7 +55,7 @@
       </button>
     </div>
 
-    <p class="foot">图：故宫博物院藏本（公有领域）　·　拖动、滚轮、方向键皆可展卷</p>
+    <p class="foot">图：故宫博物院藏本（公有领域）　·　本站含 AI 生成内容　·　<a href="aigc.html">AIGC 使用说明</a></p>
   </div>
 </section>
 
@@ -217,7 +218,7 @@
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg>
       <span>退出</span>
     </button>
-    <div class="walk-place"><b>虹桥街市</b><span id="walkWhere">桥头</span></div>
+    <div class="walk-place"><b>虹桥街市</b><span id="walkWhere">桥头</span><em class="walk-ai">AI 生成场景</em></div>
     <div class="walk-hint"><kbd>←</kbd><kbd>→</kbd> 行走</div>
   </header>
 
@@ -246,7 +247,7 @@
       <span>返回</span>
     </button>
     <div class="film-head"><b>影像</b><span>清明上河 · 七段</span></div>
-    <span class="film-hint">点开即可播放</span>
+    <span class="film-hint">AI 生成短片 · 点开即可播放</span>
   </header>
   <div id="filmGrid" class="film-grid"></div>
   <div id="filmStage" class="film-stage" hidden>
