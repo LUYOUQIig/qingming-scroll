@@ -1442,6 +1442,7 @@
     el.filmGrid.innerHTML = FILMS.map((f, i) => `
       <button class="film-card" data-i="${i}" aria-label="播放 ${f.t}">
         <img src="assets/film/${f.f}.jpg" alt="${f.t} · ${f.sub}" loading="lazy">
+        <em class="film-ai">AI</em>
         <span class="film-play"><i></i></span>
         <span class="film-meta"><b>${f.t}</b><span>${f.d}</span></span>
       </button>`).join('');
