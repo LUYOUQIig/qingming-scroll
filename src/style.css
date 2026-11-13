@@ -850,6 +850,22 @@ body[data-rain="1"] .rain-wash{opacity:1}
 }
 .film-hot:hover span,.film-hot:focus-visible span{opacity:1}
 
+/* AIGC 标识 */
+.foot a{color:inherit;border-bottom:1px solid rgba(75,64,54,.4);text-decoration:none}
+.foot a:hover{color:var(--cin);border-color:var(--cin)}
+.walk-ai{
+  font-style:normal;
+  font-family:var(--sans);font-size:9px;letter-spacing:.14em;
+  color:rgba(239,229,205,.62);padding:2px 7px;margin-top:3px;
+  border:1px solid rgba(239,229,205,.28);border-radius:30px;white-space:nowrap;
+}
+.film-ai{
+  position:absolute;right:10px;top:10px;font-style:normal;
+  font-family:var(--sans);font-size:9.5px;letter-spacing:.1em;
+  color:#f3e7cb;background:rgba(20,14,10,.66);border:1px solid rgba(239,229,205,.3);
+  padding:1px 5px;border-radius:2px;
+}
+
 /* =========================================================
    响应式
    ========================================================= */
